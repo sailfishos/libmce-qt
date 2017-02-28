@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
+ * Copyright (C) 2016-2017 Jolla Ltd.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -42,7 +42,7 @@
 class QMCE_EXPORT QMceDeclarativePlugin : public QQmlExtensionPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID QQmlExtensionInterface_iid)
+    Q_PLUGIN_METADATA(IID "Nemo.Mce")
 
 public:
     void registerTypes(const char* aUri);
