@@ -59,7 +59,7 @@ rm -rf %{buildroot}
 
 %files declarative
 %defattr(-,root,root,-)
-%{_libdir}/qt5/qml/org/sailfish/mce
+%{_libdir}/qt5/qml/Nemo/Mce
 
 %files devel
 %defattr(-,root,root,-)

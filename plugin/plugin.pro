@@ -12,8 +12,8 @@ INCLUDEPATH +=  ../lib/include
 SOURCES =  qmcedeclarativeplugin.cpp
 OTHER_FILES += qmldir
 
-target.path = $$[QT_INSTALL_QML]/org/sailfish/mce
-qmldir.path = $$[QT_INSTALL_QML]/org/sailfish/mce
+target.path = $$[QT_INSTALL_QML]/Nemo/Mce
+qmldir.path = $$[QT_INSTALL_QML]/Nemo/Mce
 qmldir.files += qmldir
 
 INSTALLS += target qmldir

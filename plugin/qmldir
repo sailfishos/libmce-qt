@@ -1,2 +1,2 @@
-module org.sailfish.mce
+module Nemo.Mce
 plugin qmcedeclarative
