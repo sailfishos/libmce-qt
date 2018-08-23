@@ -7,8 +7,6 @@ QT -= gui
 QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-psabi
 INCLUDEPATH += include
 
-include(version.pri)
-
 TEMPLATE = lib
 DEFINES += QMCE_LIBRARY
 
@@ -59,6 +57,5 @@ QMAKE_PKGCONFIG_DESTDIR = pkgconfig
 QMAKE_PKGCONFIG_INCDIR = $$headers.path
 QMAKE_PKGCONFIG_DESCRIPTION = Qt bindings for mce
 QMAKE_PKGCONFIG_PREFIX = $$PREFIX
-QMAKE_PKGCONFIG_VERSION = $$VERSION
 
 INSTALLS += target headers pkgconfig

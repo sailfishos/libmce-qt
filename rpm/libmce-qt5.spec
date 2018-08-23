@@ -42,7 +42,7 @@ This package contains the development header files for libmce-qt5
 %setup -q -n %{name}-%{version}
 
 %build
-%qtc_qmake5
+%qtc_qmake5 "VERSION=$(sed 's/+.*//' <<<"%{version}")"
 %qtc_make %{?_smp_mflags}
 
 %install
