@@ -21,12 +21,22 @@ XML_FILES += \
 OTHER_FILES += $$XML_FILES
 
 SOURCES += \
+    src/qmcebatterylevel.cpp \
+    src/qmcebatterystatus.cpp \
+    src/qmcecablestate.cpp \
+    src/qmcechargerstate.cpp \
     src/qmcedisplay.cpp \
+    src/qmcepowersavemode.cpp \
     src/qmceproxy.cpp \
     src/qmcetklock.cpp
 
 PUBLIC_HEADERS += \
+    include/qmcebatterylevel.h \
+    include/qmcebatterystatus.h \
+    include/qmcecablestate.h \
+    include/qmcechargerstate.h \
     include/qmcedisplay.h \
+    include/qmcepowersavemode.h \
     include/qmcetypes.h \
     include/qmcetklock.h
 

@@ -34,40 +34,26 @@
  * any official policies, either expressed or implied.
  */
 
-#include "qmcedisplay.h"
-#include "qmcetklock.h"
-#include "qmcebatterylevel.h"
-#include "qmcebatterystatus.h"
-#include "qmcecablestate.h"
-#include "qmcechargerstate.h"
-#include "qmcepowersavemode.h"
+#ifndef QMCE_BATTERYLEVEL_H_
+#define QMCE_BATTERYLEVEL_H_
 
-#include <QtQml>
+#include "qmcetypes.h"
 
-class QMCE_EXPORT QMceDeclarativePlugin : public QQmlExtensionPlugin
+class QMCE_EXPORT QMceBatteryLevel : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "Nemo.Mce")
-
+    Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
+    Q_PROPERTY(int percent READ percent NOTIFY percentChanged)
 public:
-    void registerTypes(const char* aUri);
-    static void registerTypes(const char* aUri, int aMajor, int aMinor);
+    QMceBatteryLevel(QObject* aParent = NULL);
+    bool valid() const;
+    int percent() const;
+Q_SIGNALS:
+    void validChanged();
+    void percentChanged();
+private:
+    class Private;
+    Private* iPrivate;
 };
 
-void QMceDeclarativePlugin::registerTypes(const char* aUri, int aMajor, int aMinor)
-{
-    qmlRegisterType<QMceDisplay>(aUri, aMajor, aMinor, "MceDisplay");
-    qmlRegisterType<QMceTkLock>(aUri, aMajor, aMinor, "MceTkLock");
-    qmlRegisterType<QMceBatteryLevel>(aUri, aMajor, aMinor, "MceBatteryLevel");
-    qmlRegisterType<QMceBatteryStatus>(aUri, aMajor, aMinor, "MceBatteryStatus");
-    qmlRegisterType<QMceCableState>(aUri, aMajor, aMinor, "MceCableState");
-    qmlRegisterType<QMceChargerState>(aUri, aMajor, aMinor, "MceChargerState");
-    qmlRegisterType<QMcePowerSaveMode>(aUri, aMajor, aMinor, "McePowerSaveMode");
-}
-
-void QMceDeclarativePlugin::registerTypes(const char* aUri)
-{
-    registerTypes(aUri, 1, 0);
-}
-
-#include "qmcedeclarativeplugin.moc"
+#endif // QMCE_BATTERYLEVEL_H_
