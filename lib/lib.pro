@@ -7,6 +7,8 @@ QT -= gui
 QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-psabi
 INCLUDEPATH += include
 
+include(version.pri)
+
 TEMPLATE = lib
 DEFINES += QMCE_LIBRARY
 
