@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Jolla Ltd.
+ * Copyright (C) 2019 Jolla Ltd.
  * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
@@ -35,42 +35,33 @@
  * any official policies, either expressed or implied.
  */
 
-#include "qmcedisplay.h"
-#include "qmcetklock.h"
-#include "qmcebatterylevel.h"
-#include "qmcebatterystatus.h"
-#include "qmcecablestate.h"
-#include "qmcechargerstate.h"
-#include "qmcepowersavemode.h"
-#include "qmcecallstate.h"
+#ifndef QMCE_CALLSTATE_H_
+#define QMCE_CALLSTATE_H_
 
-#include <QtQml>
+#include "qmcetypes.h"
 
-class QMCE_EXPORT QMceDeclarativePlugin : public QQmlExtensionPlugin
+class QMCE_EXPORT QMceCallState : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "Nemo.Mce")
-
+    Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
+    Q_PROPERTY(State state READ state NOTIFY stateChanged)
+    Q_PROPERTY(Type type READ type NOTIFY typeChanged)
+    Q_ENUMS(State)
+    Q_ENUMS(Type)
 public:
-    void registerTypes(const char* aUri);
-    static void registerTypes(const char* aUri, int aMajor, int aMinor);
+    enum State { None, Ringing, Active, Service, };
+    enum Type { Normal, Emergency, };
+    QMceCallState(QObject* aParent = NULL);
+    bool valid() const;
+    State state() const;
+    Type type() const;
+Q_SIGNALS:
+    void validChanged();
+    void stateChanged();
+    void typeChanged();
+private:
+    class Private;
+    Private* iPrivate;
 };
 
-void QMceDeclarativePlugin::registerTypes(const char* aUri, int aMajor, int aMinor)
-{
-    qmlRegisterType<QMceDisplay>(aUri, aMajor, aMinor, "MceDisplay");
-    qmlRegisterType<QMceTkLock>(aUri, aMajor, aMinor, "MceTkLock");
-    qmlRegisterType<QMceBatteryLevel>(aUri, aMajor, aMinor, "MceBatteryLevel");
-    qmlRegisterType<QMceBatteryStatus>(aUri, aMajor, aMinor, "MceBatteryStatus");
-    qmlRegisterType<QMceCableState>(aUri, aMajor, aMinor, "MceCableState");
-    qmlRegisterType<QMceChargerState>(aUri, aMajor, aMinor, "MceChargerState");
-    qmlRegisterType<QMcePowerSaveMode>(aUri, aMajor, aMinor, "McePowerSaveMode");
-    qmlRegisterType<QMceCallState>(aUri, aMajor, aMinor, "QMceCallState");
-}
-
-void QMceDeclarativePlugin::registerTypes(const char* aUri)
-{
-    registerTypes(aUri, 1, 0);
-}
-
-#include "qmcedeclarativeplugin.moc"
+#endif // QMCE_CALLSTATE_H_
