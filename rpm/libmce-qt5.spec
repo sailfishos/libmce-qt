@@ -12,7 +12,8 @@ Requires(postun): /sbin/ldconfig
 BuildRequires:  pkgconfig(Qt5Core)
 BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Quick)
-BuildRequires:  pkgconfig(mce)
+BuildRequires:  pkgconfig(mce) >= 1.27.0
+Requires:       mce >= 1.102.0
 
 %{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
 %{!?qtc_make:%define qtc_make make}

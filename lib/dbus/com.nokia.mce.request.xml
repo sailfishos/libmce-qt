@@ -134,6 +134,9 @@
     <method name="get_charger_state">
       <arg direction="out" name="charger_state" type="s"/>
     </method>
+    <method name="get_charger_type">
+      <arg direction="out" name="charger_type" type="s"/>
+    </method>
     <method name="get_usb_cable_state">
       <arg direction="out" name="usb_cable_state" type="s"/>
     </method>
