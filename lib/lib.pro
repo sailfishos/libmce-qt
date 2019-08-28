@@ -26,6 +26,8 @@ SOURCES += \
     src/qmcebatterylevel.cpp \
     src/qmcebatterystatus.cpp \
     src/qmcecablestate.cpp \
+    src/qmcecallstate.cpp \
+    src/qmcechargertype.cpp \
     src/qmcechargerstate.cpp \
     src/qmcedisplay.cpp \
     src/qmcepowersavemode.cpp \
@@ -36,6 +38,8 @@ PUBLIC_HEADERS += \
     include/qmcebatterylevel.h \
     include/qmcebatterystatus.h \
     include/qmcecablestate.h \
+    include/qmcecallstate.h \
+    include/qmcechargertype.h \
     include/qmcechargerstate.h \
     include/qmcedisplay.h \
     include/qmcepowersavemode.h \
