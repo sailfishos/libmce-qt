@@ -51,6 +51,9 @@
     <signal name="battery_level_ind">
       <arg name="battery_level" type="i"/>
     </signal>
+    <signal name="battery_state_ind">
+      <arg name="battery_state" type="s"/>
+    </signal>
     <signal name="battery_status_ind">
       <arg name="battery_status" type="s"/>
     </signal>
