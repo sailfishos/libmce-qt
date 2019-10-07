@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016-2018 Jolla Ltd.
+ * Copyright (C) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -68,7 +69,7 @@ QMceBatteryStatus::Private::Private(QMceBatteryStatus* aParent) :
     iParent(aParent),
     iProxy(QMceProxy::instance()),
     iValid(false),
-    iValue(Full)
+    iValue(Ok)
 {
     connect(iProxy->signalProxy(),
             SIGNAL(battery_status_ind(QString)),
