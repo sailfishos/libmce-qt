@@ -68,8 +68,8 @@ void QMceDeclarativePlugin::registerTypes(const char* aUri, int aMajor, int aMin
     qmlRegisterType<QMceCableState>(aUri, aMajor, aMinor, "MceCableState");
     qmlRegisterType<QMceChargerState>(aUri, aMajor, aMinor, "MceChargerState");
     qmlRegisterType<QMcePowerSaveMode>(aUri, aMajor, aMinor, "McePowerSaveMode");
-    qmlRegisterType<QMceCallState>(aUri, aMajor, aMinor, "QMceCallState");
-    qmlRegisterType<QMceChargerType>(aUri, aMajor, aMinor, "QMceChargerType");
+    qmlRegisterType<QMceCallState>(aUri, aMajor, aMinor, "MceCallState");
+    qmlRegisterType<QMceChargerType>(aUri, aMajor, aMinor, "MceChargerType");
 }
 
 void QMceDeclarativePlugin::registerTypes(const char* aUri)
