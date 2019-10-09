@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2016-2019 Jolla Ltd.
  * Copyright (c) 2019 Open Mobile Platform LLC.
- * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -35,44 +34,44 @@
  * any official policies, either expressed or implied.
  */
 
-#include "qmcebatterystatus.h"
+#include "qmcebatterystate.h"
 #include "qmceproxy.h"
 
 #include <mce/mode-names.h>
 
 // ==========================================================================
-// QMceBatteryStatus::Private
+// QMceBatteryState::Private
 // ==========================================================================
 
-class QMceBatteryStatus::Private : public QObject {
+class QMceBatteryState::Private : public QObject {
     Q_OBJECT
 public:
-    Private(QMceBatteryStatus* aParent);
+    Private(QMceBatteryState* aParent);
     bool valid() const;
-    QMceBatteryStatus::Status value() const;
+    QMceBatteryState::State value() const;
 private:
     void queryValue();
     void setValid(bool valid);
 private Q_SLOTS:
     void onProxyValidChanged();
     void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
-    void updateValue(QString status);
+    void updateValue(QString state);
 private:
-    QMceBatteryStatus* iParent;
+    QMceBatteryState* iParent;
     QSharedPointer<QMceProxy> iProxy;
     bool iValid;
-    QMceBatteryStatus::Status iValue;
+    QMceBatteryState::State iValue;
 };
 
-QMceBatteryStatus::Private::Private(QMceBatteryStatus* aParent) :
+QMceBatteryState::Private::Private(QMceBatteryState* aParent) :
     QObject(aParent),
     iParent(aParent),
     iProxy(QMceProxy::instance()),
     iValid(false),
-    iValue(Ok)
+    iValue(Unknown)
 {
     connect(iProxy->signalProxy(),
-            SIGNAL(battery_status_ind(QString)),
+            SIGNAL(battery_state_ind(QString)),
             SLOT(updateValue(QString)));
     connect(iProxy.data(),
             SIGNAL(validChanged()),
@@ -82,12 +81,12 @@ QMceBatteryStatus::Private::Private(QMceBatteryStatus* aParent) :
     }
 }
 
-bool QMceBatteryStatus::Private::valid() const
+bool QMceBatteryState::Private::valid() const
 {
     return iValid;
 }
 
-void QMceBatteryStatus::Private::setValid(bool valid)
+void QMceBatteryState::Private::setValid(bool valid)
 {
     if (iValid != valid) {
         iValid = valid;
@@ -95,46 +94,41 @@ void QMceBatteryStatus::Private::setValid(bool valid)
     }
 }
 
-QMceBatteryStatus::Status QMceBatteryStatus::Private::value() const
+QMceBatteryState::State QMceBatteryState::Private::value() const
 {
     return iValue;
 }
 
-void QMceBatteryStatus::Private::updateValue(QString status)
+void QMceBatteryState::Private::updateValue(QString state)
 {
-    bool valid = true;
-    QMceBatteryStatus::Status value = Full;
+    QMceBatteryState::State value = Unknown;
 
-    if (status == QStringLiteral(MCE_BATTERY_STATUS_FULL)) {
+    if (state == QStringLiteral(MCE_BATTERY_STATE_CHARGING)) {
+        value = Charging;
+    } else if (state == QStringLiteral(MCE_BATTERY_STATE_DISCHARGING)) {
+        value = Discharging;
+    } else if (state == QStringLiteral(MCE_BATTERY_STATE_NOT_CHARGING)) {
+        value = NotCharging;
+    } else if (state == QStringLiteral(MCE_BATTERY_STATE_FULL)) {
         value = Full;
-    } else if (status ==QStringLiteral(MCE_BATTERY_STATUS_OK)) {
-        value = Ok;
-    } else if (status ==QStringLiteral(MCE_BATTERY_STATUS_LOW)) {
-        value = Low;
-    } else if (status ==QStringLiteral(MCE_BATTERY_STATUS_EMPTY)) {
-        value = Empty;
-    } else {
-        valid = false;
     }
 
-    if (valid) {
-        if (iValue != value) {
-            iValue = value;
-            Q_EMIT iParent->statusChanged();
-        }
+    if (iValue != value) {
+        iValue = value;
+        Q_EMIT iParent->stateChanged();
     }
-    setValid(valid);
+    setValid(true);
 }
 
-void QMceBatteryStatus::Private::queryValue()
+void QMceBatteryState::Private::queryValue()
 {
     connect(new QDBusPendingCallWatcher(
-        iProxy->requestProxy()->get_battery_status(), this),
+        iProxy->requestProxy()->get_battery_state(), this),
         SIGNAL(finished(QDBusPendingCallWatcher*)),
         SLOT(onQueryFinished(QDBusPendingCallWatcher*)));
 }
 
-void QMceBatteryStatus::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
+void QMceBatteryState::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
 {
     QDBusPendingReply<QString> reply(*aWatcher);
     if (!reply.isError()) {
@@ -143,7 +137,7 @@ void QMceBatteryStatus::Private::onQueryFinished(QDBusPendingCallWatcher* aWatch
     aWatcher->deleteLater();
 }
 
-void QMceBatteryStatus::Private::onProxyValidChanged()
+void QMceBatteryState::Private::onProxyValidChanged()
 {
     if (iProxy->valid()) {
         queryValue();
@@ -153,23 +147,23 @@ void QMceBatteryStatus::Private::onProxyValidChanged()
 }
 
 // ==========================================================================
-// QMceBatteryStatus
+// QMceBatteryState
 // ==========================================================================
 
-QMceBatteryStatus::QMceBatteryStatus(QObject* aParent) :
+QMceBatteryState::QMceBatteryState(QObject* aParent) :
     QObject(aParent),
     iPrivate(new Private(this))
 {
 }
 
-bool QMceBatteryStatus::valid() const
+bool QMceBatteryState::valid() const
 {
     return iPrivate->valid();
 }
 
-QMceBatteryStatus::Status QMceBatteryStatus::status() const
+QMceBatteryState::State QMceBatteryState::state() const
 {
     return iPrivate->value();
 }
 
-#include "qmcebatterystatus.moc"
+#include "qmcebatterystate.moc"

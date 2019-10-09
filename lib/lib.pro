@@ -25,6 +25,7 @@ OTHER_FILES += $$XML_FILES
 SOURCES += \
     src/qmcebatterylevel.cpp \
     src/qmcebatterystatus.cpp \
+    src/qmcebatterystate.cpp \
     src/qmcecablestate.cpp \
     src/qmcecallstate.cpp \
     src/qmcechargertype.cpp \
@@ -37,6 +38,7 @@ SOURCES += \
 PUBLIC_HEADERS += \
     include/qmcebatterylevel.h \
     include/qmcebatterystatus.h \
+    include/qmcebatterystate.h \
     include/qmcecablestate.h \
     include/qmcecallstate.h \
     include/qmcechargertype.h \

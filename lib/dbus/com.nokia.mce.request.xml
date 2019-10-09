@@ -128,6 +128,9 @@
     <method name="get_battery_level">
       <arg direction="out" name="battery_level" type="i"/>
     </method>
+    <method name="get_battery_state">
+      <arg direction="out" name="battery_state" type="s"/>
+    </method>
     <method name="get_battery_status">
       <arg direction="out" name="battery_status" type="s"/>
     </method>
