@@ -1,11 +1,11 @@
 Name:       libmce-qt5
 
 Summary:    A library of Qt bindings for mce
-Version:    1.3.0
+Version:    1.3.1
 Release:    1
 Group:      System/Libraries
 License:    BSD
-URL:        https://git.merproject.org/mer-core/libmce-qt5
+URL:        https://git.sailfishos.org/mer-core/libmce-qt
 Source0:    libmce-qt5-%{version}.tar.bz2
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
