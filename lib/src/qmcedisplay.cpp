@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
+ * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -48,7 +49,7 @@ public:
     void queryDisplayStatus();
 
 private Q_SLOTS:
-    void onProxyValidChanged();
+    void onNameOwnerChanged();
     void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
     void updateDisplayStatus(QString aStatus);
 
@@ -66,23 +67,25 @@ QMceDisplay::Private::Private(QMceDisplay* aParent) :
     iValid(false),
     iState(DisplayOff)
 {
-    connect(iProxy->signalProxy(),
-        SIGNAL(display_status_ind(QString)),
-        SLOT(updateDisplayStatus(QString)));
-    connect(iProxy.data(),
-        SIGNAL(validChanged()),
-        SLOT(onProxyValidChanged()));
-    if (iProxy->valid()) {
-        queryDisplayStatus();
-    }
+    QObject::connect(iProxy->signalProxy(),
+                     &QMceSignalProxy::display_status_ind,
+                     this,
+                     &QMceDisplay::Private::updateDisplayStatus);
+    QObject::connect(iProxy.data(),
+                     &QMceProxy::nameOwnerChanged,
+                     this,
+                     &QMceDisplay::Private::onNameOwnerChanged);
+    onNameOwnerChanged();
 }
 
 void QMceDisplay::Private::queryDisplayStatus()
 {
-    connect(new QDBusPendingCallWatcher(
-        iProxy->requestProxy()->get_display_status(), this),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onQueryFinished(QDBusPendingCallWatcher*)));
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(
+        iProxy->requestProxy()->get_display_status(), this);
+    QObject::connect(watcher,
+                     &QDBusPendingCallWatcher::finished,
+                     this,
+                     &QMceDisplay::Private::onQueryFinished);
 }
 
 void QMceDisplay::Private::updateDisplayStatus(QString aStatus)
@@ -117,9 +120,9 @@ void QMceDisplay::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
     aWatcher->deleteLater();
 }
 
-void QMceDisplay::Private::onProxyValidChanged()
+void QMceDisplay::Private::onNameOwnerChanged()
 {
-    if (iProxy->valid()) {
+    if (iProxy->hasNameOwner()) {
         queryDisplayStatus();
     } else {
         if (iValid) {

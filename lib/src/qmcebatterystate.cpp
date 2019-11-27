@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2016-2019 Jolla Ltd.
  * Copyright (c) 2019 Open Mobile Platform LLC.
  *
  * You may use this file under the terms of BSD license as follows:
@@ -53,7 +53,7 @@ private:
     void queryValue();
     void setValid(bool valid);
 private Q_SLOTS:
-    void onProxyValidChanged();
+    void onNameOwnerChanged();
     void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
     void updateValue(QString state);
 private:
@@ -70,15 +70,15 @@ QMceBatteryState::Private::Private(QMceBatteryState* aParent) :
     iValid(false),
     iValue(Unknown)
 {
-    connect(iProxy->signalProxy(),
-            SIGNAL(battery_state_ind(QString)),
-            SLOT(updateValue(QString)));
-    connect(iProxy.data(),
-            SIGNAL(validChanged()),
-            SLOT(onProxyValidChanged()));
-    if (iProxy->valid()) {
-        queryValue();
-    }
+    QObject::connect(iProxy->signalProxy(),
+                     &QMceSignalProxy::battery_state_ind,
+                     this,
+                     &QMceBatteryState::Private::updateValue);
+    QObject::connect(iProxy.data(),
+                     &QMceProxy::nameOwnerChanged,
+                     this,
+                     &QMceBatteryState::Private::onNameOwnerChanged);
+    onNameOwnerChanged();
 }
 
 bool QMceBatteryState::Private::valid() const
@@ -122,10 +122,12 @@ void QMceBatteryState::Private::updateValue(QString state)
 
 void QMceBatteryState::Private::queryValue()
 {
-    connect(new QDBusPendingCallWatcher(
-        iProxy->requestProxy()->get_battery_state(), this),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onQueryFinished(QDBusPendingCallWatcher*)));
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(
+        iProxy->requestProxy()->get_battery_state(), this);
+    QObject::connect(watcher,
+                     &QDBusPendingCallWatcher::finished,
+                     this,
+                     &QMceBatteryState::Private::onQueryFinished);
 }
 
 void QMceBatteryState::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
@@ -137,9 +139,9 @@ void QMceBatteryState::Private::onQueryFinished(QDBusPendingCallWatcher* aWatche
     aWatcher->deleteLater();
 }
 
-void QMceBatteryState::Private::onProxyValidChanged()
+void QMceBatteryState::Private::onNameOwnerChanged()
 {
-    if (iProxy->valid()) {
+    if (iProxy->hasNameOwner()) {
         queryValue();
     } else {
         setValid(false);

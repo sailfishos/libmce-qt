@@ -1,7 +1,6 @@
 /*
- * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Jolla Ltd.
  * Copyright (c) 2019 Open Mobile Platform LLC.
- * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
  *
@@ -35,48 +34,51 @@
  * any official policies, either expressed or implied.
  */
 
-#include "qmcedisplay.h"
-#include "qmcetklock.h"
-#include "qmcebatterylevel.h"
-#include "qmcebatterystatus.h"
-#include "qmcebatterystate.h"
-#include "qmcecablestate.h"
-#include "qmcechargerstate.h"
-#include "qmcepowersavemode.h"
-#include "qmcecallstate.h"
-#include "qmcechargertype.h"
 #include "qmcenameowner.h"
+#include "qmceproxy.h"
 
-#include <QtQml>
+// ==========================================================================
+// QMceNameOwner::Private
+// ==========================================================================
 
-class QMCE_EXPORT QMceDeclarativePlugin : public QQmlExtensionPlugin
+class QMceNameOwner::Private : public QObject
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "Nemo.Mce")
-
 public:
-    void registerTypes(const char* aUri);
-    static void registerTypes(const char* aUri, int aMajor, int aMinor);
+    Private(QMceNameOwner *aParent);
+    QMceNameOwner *iParent;
+    QSharedPointer<QMceProxy> iProxy;
 };
 
-void QMceDeclarativePlugin::registerTypes(const char* aUri, int aMajor, int aMinor)
+QMceNameOwner::Private::Private(QMceNameOwner *aParent) :
+    QObject(aParent),
+    iParent(aParent),
+    iProxy(QMceProxy::instance())
 {
-    qmlRegisterType<QMceDisplay>(aUri, aMajor, aMinor, "MceDisplay");
-    qmlRegisterType<QMceTkLock>(aUri, aMajor, aMinor, "MceTkLock");
-    qmlRegisterType<QMceBatteryLevel>(aUri, aMajor, aMinor, "MceBatteryLevel");
-    qmlRegisterType<QMceBatteryStatus>(aUri, aMajor, aMinor, "MceBatteryStatus");
-    qmlRegisterType<QMceBatteryState>(aUri, aMajor, aMinor, "MceBatteryState");
-    qmlRegisterType<QMceCableState>(aUri, aMajor, aMinor, "MceCableState");
-    qmlRegisterType<QMceChargerState>(aUri, aMajor, aMinor, "MceChargerState");
-    qmlRegisterType<QMcePowerSaveMode>(aUri, aMajor, aMinor, "McePowerSaveMode");
-    qmlRegisterType<QMceCallState>(aUri, aMajor, aMinor, "MceCallState");
-    qmlRegisterType<QMceChargerType>(aUri, aMajor, aMinor, "MceChargerType");
-    qmlRegisterType<QMceNameOwner>(aUri, aMajor, aMinor, "MceNameOwner");
+    QObject::connect(iProxy.data(), &QMceProxy::nameOwnerIsKnownChanged,
+                     iParent, &QMceNameOwner::validChanged);
+    QObject::connect(iProxy.data(), &QMceProxy::nameOwnerChanged,
+                     iParent, &QMceNameOwner::nameOwnerChanged);
 }
 
-void QMceDeclarativePlugin::registerTypes(const char* aUri)
+// ==========================================================================
+// QMceNameOwner
+// ==========================================================================
+
+QMceNameOwner::QMceNameOwner(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
-    registerTypes(aUri, 1, 0);
 }
 
-#include "qmcedeclarativeplugin.moc"
+bool QMceNameOwner::valid() const
+{
+    return iPrivate->iProxy->nameOwnerIsKnown();
+}
+
+QString QMceNameOwner::nameOwner() const
+{
+    return iPrivate->iProxy->nameOwner();
+}
+
+#include "qmcenameowner.moc"

@@ -54,7 +54,7 @@ private:
     void queryValue();
     void setValid(bool valid);
 private Q_SLOTS:
-    void onProxyValidChanged();
+    void onNameOwnerChanged();
     void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
     void updateValue(QString type);
 private:
@@ -71,15 +71,15 @@ QMceChargerType::Private::Private(QMceChargerType* aParent) :
     iValid(false),
     iValue(None)
 {
-    connect(iProxy->signalProxy(),
-            SIGNAL(charger_type_ind(QString)),
-            SLOT(updateValue(QString)));
-    connect(iProxy.data(),
-            SIGNAL(validChanged()),
-            SLOT(onProxyValidChanged()));
-    if (iProxy->valid()) {
-        queryValue();
-    }
+    QObject::connect(iProxy->signalProxy(),
+                     &QMceSignalProxy::charger_type_ind,
+                     this,
+                     &QMceChargerType::Private::updateValue);
+    QObject::connect(iProxy.data(),
+                     &QMceProxy::nameOwnerChanged,
+                     this,
+                     &QMceChargerType::Private::onNameOwnerChanged);
+    onNameOwnerChanged();
 }
 
 bool QMceChargerType::Private::valid() const
@@ -133,10 +133,12 @@ void QMceChargerType::Private::updateValue(QString type)
 
 void QMceChargerType::Private::queryValue()
 {
-    connect(new QDBusPendingCallWatcher(
-        iProxy->requestProxy()->get_charger_type(), this),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onQueryFinished(QDBusPendingCallWatcher*)));
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(
+        iProxy->requestProxy()->get_charger_type(), this);
+    QObject::connect(watcher,
+                     &QDBusPendingCallWatcher::finished,
+                     this,
+                     &QMceChargerType::Private::onQueryFinished);
 }
 
 void QMceChargerType::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
@@ -148,9 +150,9 @@ void QMceChargerType::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher
     aWatcher->deleteLater();
 }
 
-void QMceChargerType::Private::onProxyValidChanged()
+void QMceChargerType::Private::onNameOwnerChanged()
 {
-    if (iProxy->valid()) {
+    if (iProxy->hasNameOwner()) {
         queryValue();
     } else {
         setValid(false);

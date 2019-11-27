@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
+ * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -52,13 +53,16 @@ class QMceProxy : public QObject
 public:
     static QSharedPointer<QMceProxy> instance();
 
-    bool valid() const;
+    QString nameOwner() const;
+    bool nameOwnerIsKnown() const;
+    bool hasNameOwner() const;
 
     QMceRequestProxy* requestProxy();
     QMceSignalProxy* signalProxy();
 
 Q_SIGNALS:
-    void validChanged();
+    void nameOwnerChanged();
+    void nameOwnerIsKnownChanged();
 
 private:
     class Private;
