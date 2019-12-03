@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
+ * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -48,7 +49,7 @@ public:
     void queryMode();
 
 private Q_SLOTS:
-    void onProxyValidChanged();
+    void onNameOwnerChanged();
     void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
     void updateMode(QString aStatus);
 
@@ -68,23 +69,25 @@ QMceTkLock::Private::Private(QMceTkLock* aParent) :
     iLocked(true),
     iMode(Locked)
 {
-    connect(iProxy->signalProxy(),
-        SIGNAL(tklock_mode_ind(QString)),
-        SLOT(updateMode(QString)));
-    connect(iProxy.data(),
-        SIGNAL(validChanged()),
-        SLOT(onProxyValidChanged()));
-    if (iProxy->valid()) {
-        queryMode();
-    }
+    QObject::connect(iProxy->signalProxy(),
+                     &QMceSignalProxy::tklock_mode_ind,
+                     this,
+                     &QMceTkLock::Private::updateMode);
+    QObject::connect(iProxy.data(),
+                     &QMceProxy::nameOwnerChanged,
+                     this,
+                     &QMceTkLock::Private::onNameOwnerChanged);
+    onNameOwnerChanged();
 }
 
 void QMceTkLock::Private::queryMode()
 {
-    connect(new QDBusPendingCallWatcher(
-        iProxy->requestProxy()->get_tklock_mode(), this),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onQueryFinished(QDBusPendingCallWatcher*)));
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(
+        iProxy->requestProxy()->get_tklock_mode(), this);
+    QObject::connect(watcher,
+                     &QDBusPendingCallWatcher::finished,
+                     this,
+                     &QMceTkLock::Private::onQueryFinished);
 }
 
 void QMceTkLock::Private::updateMode(QString aMode)
@@ -133,9 +136,9 @@ void QMceTkLock::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
     aWatcher->deleteLater();
 }
 
-void QMceTkLock::Private::onProxyValidChanged()
+void QMceTkLock::Private::onNameOwnerChanged()
 {
-    if (iProxy->valid()) {
+    if (iProxy->hasNameOwner()) {
         queryMode();
     } else {
         if (iValid) {

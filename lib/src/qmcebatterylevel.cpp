@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016-2018 Jolla Ltd.
+ * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -51,7 +52,7 @@ private:
     void queryValue();
     void setValid(bool valid);
 private Q_SLOTS:
-    void onProxyValidChanged();
+    void onNameOwnerChanged();
     void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
     void updateValue(int percent);
 private:
@@ -68,15 +69,15 @@ QMceBatteryLevel::Private::Private(QMceBatteryLevel* aParent) :
     iValid(false),
     iValue(100)
 {
-    connect(iProxy->signalProxy(),
-            SIGNAL(battery_level_ind(int)),
-            SLOT(updateValue(int)));
-    connect(iProxy.data(),
-            SIGNAL(validChanged()),
-            SLOT(onProxyValidChanged()));
-    if (iProxy->valid()) {
-        queryValue();
-    }
+    QObject::connect(iProxy->signalProxy(),
+                     &QMceSignalProxy::battery_level_ind,
+                     this,
+                     &QMceBatteryLevel::Private::updateValue);
+    QObject::connect(iProxy.data(),
+                     &QMceProxy::nameOwnerChanged,
+                     this,
+                     &QMceBatteryLevel::Private::onNameOwnerChanged);
+    onNameOwnerChanged();
 }
 
 bool QMceBatteryLevel::Private::valid() const
@@ -107,10 +108,12 @@ void QMceBatteryLevel::Private::updateValue(int percent)
 
 void QMceBatteryLevel::Private::queryValue()
 {
-    connect(new QDBusPendingCallWatcher(
-        iProxy->requestProxy()->get_battery_level(), this),
-        SIGNAL(finished(QDBusPendingCallWatcher*)),
-        SLOT(onQueryFinished(QDBusPendingCallWatcher*)));
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(
+        iProxy->requestProxy()->get_battery_level(), this);
+    QObject::connect(watcher,
+                     &QDBusPendingCallWatcher::finished,
+                     this,
+                     &QMceBatteryLevel::Private::onQueryFinished);
 }
 
 void QMceBatteryLevel::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
@@ -123,9 +126,9 @@ void QMceBatteryLevel::Private::onQueryFinished(QDBusPendingCallWatcher* aWatche
     aWatcher->deleteLater();
 }
 
-void QMceBatteryLevel::Private::onProxyValidChanged()
+void QMceBatteryLevel::Private::onNameOwnerChanged()
 {
-    if (iProxy->valid()) {
+    if (iProxy->hasNameOwner()) {
         queryValue();
     } else {
         setValid(false);

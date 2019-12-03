@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2016 Jolla Ltd.
+ * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
  * You may use this file under the terms of BSD license as follows:
@@ -48,14 +49,25 @@ public:
     QMceSignalProxy* signalProxy();
 
 private Q_SLOTS:
-    void onServiceRegistered();
-    void onServiceUnregistered();
+    void onServiceOwnerChanged(QString serviceName, QString oldOwner, QString newOwner);
+    void onGetNameOwnerReply(QDBusPendingCallWatcher *aWatcher);
 
 public:
     QMceProxy* iParent;
-    bool iValid;
+
+    /* Whether we have received a name owner changed signal,
+     * or reply to initial asynchronous name owner query.
+     */
+    bool iNameOwnerIsKnown;
+
+    /* Private name of client owning well known mce
+     * service name, or empty string when there is no
+     * owner / owner is not yet known.
+     */
+    QString iNameOwner;
 
 private:
+    void setNameOwner(const QString &newOwner);
     QDBusConnection iBus;
     QString iService;
     QMceRequestProxy* iRequestProxy;
@@ -65,21 +77,35 @@ private:
 QMceProxy::Private::Private(QMceProxy* aParent) :
     QObject(aParent),
     iParent(aParent),
+    iNameOwnerIsKnown(false),
+    iNameOwner(),
     iBus(QDBusConnection::systemBus()),
     iService(MCE_SERVICE),
     iRequestProxy(NULL),
     iSignalProxy(NULL)
 {
-    iValid = iBus.interface()->isServiceRegistered(iService);
-    QDBusServiceWatcher* watcher = new QDBusServiceWatcher(iService, iBus,
-        QDBusServiceWatcher::WatchForRegistration |
-        QDBusServiceWatcher::WatchForUnregistration, this);
-    connect(watcher,
-        SIGNAL(serviceRegistered(QString)),
-        SLOT(onServiceRegistered()));
-    connect(watcher,
-        SIGNAL(serviceUnregistered(QString)),
-        SLOT(onServiceUnregistered()));
+    /* Start tracking name owner changes */
+    QDBusServiceWatcher *serviceWatcher = new QDBusServiceWatcher(iService, iBus,
+        QDBusServiceWatcher::WatchForOwnerChange, this);
+    QObject::connect(serviceWatcher, &QDBusServiceWatcher::serviceOwnerChanged,
+                     this, &QMceProxy::Private::onServiceOwnerChanged);
+    /* Start async query to get the initial name owner */
+    QDBusPendingCall pendingCall = iBus.interface()->asyncCall(QLatin1String("GetNameOwner"), iService);
+    QDBusPendingCallWatcher *pendingCallWatcher = new QDBusPendingCallWatcher(pendingCall, this);
+    QObject::connect(pendingCallWatcher, &QDBusPendingCallWatcher::finished,
+                     this, &QMceProxy::Private::onGetNameOwnerReply);
+}
+
+void QMceProxy::Private::setNameOwner(const QString &newOwner)
+{
+    if (iNameOwner != newOwner) {
+        iNameOwner = newOwner;
+        Q_EMIT iParent->nameOwnerChanged();
+    }
+    if (!iNameOwnerIsKnown) {
+        iNameOwnerIsKnown = true;
+        Q_EMIT iParent->nameOwnerIsKnownChanged();
+    }
 }
 
 QMceRequestProxy* QMceProxy::Private::requestProxy()
@@ -100,20 +126,20 @@ QMceSignalProxy* QMceProxy::Private::signalProxy()
     return iSignalProxy;
 }
 
-void QMceProxy::Private::onServiceRegistered()
+void QMceProxy::Private::onServiceOwnerChanged(QString serviceName, QString oldOwner, QString newOwner)
 {
-    if (!iValid) {
-        iValid = true;
-        Q_EMIT iParent->validChanged();
-    }
+    if (serviceName == iService)
+        setNameOwner(newOwner);
 }
 
-void QMceProxy::Private::onServiceUnregistered()
+void QMceProxy::Private::onGetNameOwnerReply(QDBusPendingCallWatcher *aWatcher)
 {
-    if (iValid) {
-        iValid = false;
-        Q_EMIT iParent->validChanged();
+    QDBusPendingReply<QString> reply = *aWatcher;
+    if (!reply.isError()) {
+        const QString owner(reply.value());
+        setNameOwner(owner);
     }
+    aWatcher->deleteLater();
 }
 
 // ==========================================================================
@@ -125,9 +151,19 @@ QMceProxy::QMceProxy() :
 {
 }
 
-bool QMceProxy::valid() const
+bool QMceProxy::nameOwnerIsKnown() const
 {
-    return iPrivate->iValid;
+    return iPrivate->iNameOwnerIsKnown;
+}
+
+QString QMceProxy::nameOwner() const
+{
+    return iPrivate->iNameOwner;
+}
+
+bool QMceProxy::hasNameOwner() const
+{
+    return !iPrivate->iNameOwner.isEmpty();
 }
 
 QMceRequestProxy* QMceProxy::requestProxy()
