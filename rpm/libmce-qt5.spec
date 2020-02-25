@@ -1,7 +1,7 @@
 Name:       libmce-qt5
 
 Summary:    A library of Qt bindings for mce
-Version:    1.4.0
+Version:    1.4.2
 Release:    1
 Group:      System/Libraries
 License:    BSD
