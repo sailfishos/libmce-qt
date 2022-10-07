@@ -30,6 +30,7 @@ SOURCES += \
     src/qmcecallstate.cpp \
     src/qmcechargertype.cpp \
     src/qmcechargerstate.cpp \
+    src/qmcechargingstate.cpp \
     src/qmcedisplay.cpp \
     src/qmcenameowner.cpp \
     src/qmcepowersavemode.cpp \
@@ -44,6 +45,7 @@ PUBLIC_HEADERS += \
     include/qmcecallstate.h \
     include/qmcechargertype.h \
     include/qmcechargerstate.h \
+    include/qmcechargingstate.h \
     include/qmcedisplay.h \
     include/qmcenameowner.h \
     include/qmcepowersavemode.h \

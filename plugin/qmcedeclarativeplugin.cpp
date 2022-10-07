@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016-2019 Jolla Ltd.
+ * Copyright (c) 2016 - 2022 Jolla Ltd.
  * Copyright (c) 2019 Open Mobile Platform LLC.
  * Contact: Slava Monich <slava.monich@jolla.com>
  *
@@ -42,6 +42,7 @@
 #include "qmcebatterystate.h"
 #include "qmcecablestate.h"
 #include "qmcechargerstate.h"
+#include "qmcechargingstate.h"
 #include "qmcepowersavemode.h"
 #include "qmcecallstate.h"
 #include "qmcechargertype.h"
@@ -67,6 +68,7 @@ void QMceDeclarativePlugin::registerTypes(const char* aUri, int aMajor, int aMin
     qmlRegisterType<QMceBatteryStatus>(aUri, aMajor, aMinor, "MceBatteryStatus");
     qmlRegisterType<QMceBatteryState>(aUri, aMajor, aMinor, "MceBatteryState");
     qmlRegisterType<QMceCableState>(aUri, aMajor, aMinor, "MceCableState");
+    qmlRegisterType<QMceChargingState>(aUri, aMajor, aMinor, "MceChargingState");
     qmlRegisterType<QMceChargerState>(aUri, aMajor, aMinor, "MceChargerState");
     qmlRegisterType<QMcePowerSaveMode>(aUri, aMajor, aMinor, "McePowerSaveMode");
     qmlRegisterType<QMceCallState>(aUri, aMajor, aMinor, "MceCallState");

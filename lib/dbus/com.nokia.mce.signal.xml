@@ -4,6 +4,9 @@
   "http://standards.freedesktop.org/dbus/1.0/introspect.dtd">
 <node name="/com/nokia/mce/signal">
   <interface name="com.nokia.mce.signal">
+    <signal name="charging_state_ind">
+      <arg name="charging_state" type="s"/>
+    </signal>
     <signal name="sig_button_backlight_ind">
       <arg name="enabled" type="b"/>
     </signal>

@@ -4,6 +4,9 @@
   "http://standards.freedesktop.org/dbus/1.0/introspect.dtd">
 <node name="/com/nokia/mce/request">
   <interface name="com.nokia.mce.request">
+    <method name="get_charging_state">
+      <arg direction="out" name="charging_state" type="s"/>
+    </method>
     <method name="get_button_backlight">
       <arg direction="out" name="enabled" type="b"/>
     </method>

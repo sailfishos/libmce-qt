@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 Jolla Ltd.
+ * Copyright (c) 2019 - 2022 Jolla Ltd.
  * Copyright (c) 2019 Open Mobile Platform LLC.
  *
  * You may use this file under the terms of BSD license as follows:
@@ -81,6 +81,11 @@ ApplicationWindow {
                 DetailItem {
                     label: "ChargerType"
                     value: mceChargerType.text
+                    onValueChanged: console.log("####", label, value)
+                }
+                DetailItem {
+                    label: "ChargingState"
+                    value: mceChargingState.text
                     onValueChanged: console.log("####", label, value)
                 }
                 DetailItem {
@@ -208,6 +213,20 @@ ApplicationWindow {
         id: mceChargerType
         readonly property string validRepr: root.validRepr(valid)
         readonly property string text: validRepr + typeRepr
+    }
+    MceChargingState {
+        id: mceChargingState
+        readonly property string validRepr: root.validRepr(valid)
+        readonly property string valueRepr: {
+            if (value === MceChargingState.Enabled)
+                return "Enabled"
+            if (value === MceChargingState.Disabled)
+                return "Disabled"
+            if (value === MceChargingState.Unknown)
+                return "Unknown"
+            return "???"
+        }
+        readonly property string text: validRepr + valueRepr
     }
     MceDisplay {
         id: mceDisplay

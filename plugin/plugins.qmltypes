@@ -114,6 +114,23 @@ Module {
         Property { name: "type"; type: "Type"; isReadonly: true }
     }
     Component {
+        name: "QMceChargingState"
+        prototype: "QObject"
+        exports: ["Nemo.Mce/MceChargingState 1.0"]
+        exportMetaObjectRevisions: [0]
+        Enum {
+            name: "State"
+            values: {
+                "Unknown": 0,
+                "Enabled": 1,
+                "Disabled": 2
+            }
+        }
+        Property { name: "valid"; type: "bool"; isReadonly: true }
+        Property { name: "value"; type: "State"; isReadonly: true }
+        Signal { name: "stateChanged" }
+    }
+    Component {
         name: "QMceDisplay"
         prototype: "QObject"
         exports: ["Nemo.Mce/MceDisplay 1.0"]
