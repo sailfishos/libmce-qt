@@ -6,7 +6,7 @@ QMAKE_CXXFLAGS += -Wno-unused-parameter -Wno-psabi
 
 QT += qml
 QT -= gui
-LIBS += -L../lib -lmce-qt5
+LIBS += -L../lib -lmce-qt$${QT_MAJOR_VERSION}
 INCLUDEPATH +=  ../lib/include
 
 SOURCES =  qmcedeclarativeplugin.cpp
