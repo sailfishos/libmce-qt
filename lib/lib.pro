@@ -1,4 +1,4 @@
-TARGET = mce-qt5
+TARGET = mce-qt$${QT_MAJOR_VERSION}
 CONFIG += create_pc create_prl no_install_prl link_pkgconfig
 PKGCONFIG += mce
 
@@ -69,9 +69,9 @@ com_nokia_mce_signal.source_flags = -N -c QMceSignalProxy
 target.path = $$[QT_INSTALL_LIBS]
 
 headers.files = $$PUBLIC_HEADERS
-headers.path = $$INSTALL_ROOT$$PREFIX/include/mce-qt5
+headers.path = $$INSTALL_ROOT$$PREFIX/include/mce-qt$${QT_MAJOR_VERSION}
 
-pkgconfig.files = mce-qt5.pc
+pkgconfig.files = mce-qt$${QT_MAJOR_VERSION}.pc
 pkgconfig.path = $$[QT_INSTALL_LIBS]/pkgconfig
 
 QMAKE_PKGCONFIG_NAME = $$TARGET
