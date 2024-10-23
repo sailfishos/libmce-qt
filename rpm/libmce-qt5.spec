@@ -3,7 +3,6 @@ Name:       libmce-qt5
 Summary:    A library of Qt bindings for mce
 Version:    1.5.1
 Release:    1
-Group:      System/Libraries
 License:    BSD
 URL:        https://github.com/sailfishos/libmce-qt
 Source0:    libmce-qt5-%{version}.tar.bz2
@@ -14,9 +13,6 @@ BuildRequires:  pkgconfig(Qt5DBus)
 BuildRequires:  pkgconfig(Qt5Quick)
 BuildRequires:  pkgconfig(mce) >= 1.30.0
 Requires:       mce >= 1.110.0
-
-%{!?qtc_qmake5:%define qtc_qmake5 %qmake5}
-%{!?qtc_make:%define qtc_make make}
 
 %description
 This package contains Qt bindings for mce
@@ -43,11 +39,10 @@ This package contains the development header files for libmce-qt5
 %setup -q -n %{name}-%{version}
 
 %build
-%qtc_qmake5 "VERSION=$(sed 's/+.*//' <<<"%{version}")"
-%qtc_make %{?_smp_mflags}
+%qmake5 "VERSION=$(sed 's/+.*//' <<<"%{version}")"
+%make_build
 
 %install
-rm -rf %{buildroot}
 %qmake5_install
 
 %post -p /sbin/ldconfig
@@ -55,15 +50,12 @@ rm -rf %{buildroot}
 %postun -p /sbin/ldconfig
 
 %files
-%defattr(-,root,root,-)
 %{_libdir}/%{name}.so.*
 
 %files declarative
-%defattr(-,root,root,-)
 %{_libdir}/qt5/qml/Nemo/Mce
 
 %files devel
-%defattr(-,root,root,-)
 %{_libdir}/%{name}.so
 %{_libdir}/pkgconfig/mce-qt5.pc
 %{_includedir}/mce-qt5/*.h
