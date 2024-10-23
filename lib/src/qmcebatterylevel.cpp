@@ -42,19 +42,23 @@
 // QMceBatteryLevel::Private
 // ==========================================================================
 
-class QMceBatteryLevel::Private : public QObject {
+class QMceBatteryLevel::Private : public QObject
+{
     Q_OBJECT
 public:
-    Private(QMceBatteryLevel* aParent);
+    Private(QMceBatteryLevel *aParent);
     bool valid() const;
     int value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(int percent);
+
 private:
     QMceBatteryLevel* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -62,12 +66,12 @@ private:
     int iValue;
 };
 
-QMceBatteryLevel::Private::Private(QMceBatteryLevel* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(100)
+QMceBatteryLevel::Private::Private(QMceBatteryLevel *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(100)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::battery_level_ind,
@@ -116,7 +120,7 @@ void QMceBatteryLevel::Private::queryValue()
                      &QMceBatteryLevel::Private::onQueryFinished);
 }
 
-void QMceBatteryLevel::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
+void QMceBatteryLevel::Private::onQueryFinished(QDBusPendingCallWatcher *aWatcher)
 {
     QDBusPendingReply<int> reply(*aWatcher);
     if (!reply.isError()) {
@@ -139,9 +143,9 @@ void QMceBatteryLevel::Private::onNameOwnerChanged()
 // QMceBatteryLevel
 // ==========================================================================
 
-QMceBatteryLevel::QMceBatteryLevel(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceBatteryLevel::QMceBatteryLevel(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

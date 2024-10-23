@@ -61,13 +61,13 @@ public:
     Mode iMode;
 };
 
-QMceTkLock::Private::Private(QMceTkLock* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iLocked(true),
-    iMode(Locked)
+QMceTkLock::Private::Private(QMceTkLock *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iLocked(true)
+    , iMode(Locked)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::tklock_mode_ind,
@@ -123,7 +123,7 @@ void QMceTkLock::Private::updateMode(QString aMode)
     }
 }
 
-void QMceTkLock::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
+void QMceTkLock::Private::onQueryFinished(QDBusPendingCallWatcher *aWatcher)
 {
     QDBusPendingReply<QString> reply(*aWatcher);
     if (!reply.isError()) {
@@ -152,9 +152,9 @@ void QMceTkLock::Private::onNameOwnerChanged()
 // QMceTkLock
 // ==========================================================================
 
-QMceTkLock::QMceTkLock(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceTkLock::QMceTkLock(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

@@ -40,17 +40,18 @@
 
 #include "mce/mode-names.h"
 
-class QMceDisplay::Private : public QObject {
+class QMceDisplay::Private : public QObject
+{
     Q_OBJECT
 
 public:
-    Private(QMceDisplay* aParent);
+    Private(QMceDisplay *aParent);
 
     void queryDisplayStatus();
 
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateDisplayStatus(QString aStatus);
 
 public:
@@ -60,12 +61,12 @@ public:
     QMceDisplay::State iState;
 };
 
-QMceDisplay::Private::Private(QMceDisplay* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iState(DisplayOff)
+QMceDisplay::Private::Private(QMceDisplay *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iState(DisplayOff)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::display_status_ind,
@@ -107,7 +108,7 @@ void QMceDisplay::Private::updateDisplayStatus(QString aStatus)
     }
 }
 
-void QMceDisplay::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
+void QMceDisplay::Private::onQueryFinished(QDBusPendingCallWatcher *aWatcher)
 {
     QDBusPendingReply<QString> reply(*aWatcher);
     if (!reply.isError()) {
@@ -136,9 +137,9 @@ void QMceDisplay::Private::onNameOwnerChanged()
 // QMceDisplay
 // ==========================================================================
 
-QMceDisplay::QMceDisplay(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceDisplay::QMceDisplay(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

@@ -58,7 +58,7 @@ public:
         SilentUnlocked
     };
 
-    QMceTkLock(QObject* aParent = NULL);
+    QMceTkLock(QObject *aParent = nullptr);
 
     bool valid() const;
     bool locked() const;

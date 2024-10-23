@@ -46,14 +46,15 @@ class QMceNameOwner::Private : public QObject
     Q_OBJECT
 public:
     Private(QMceNameOwner *aParent);
+
     QMceNameOwner *iParent;
     QSharedPointer<QMceProxy> iProxy;
 };
 
-QMceNameOwner::Private::Private(QMceNameOwner *aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance())
+QMceNameOwner::Private::Private(QMceNameOwner *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
 {
     QObject::connect(iProxy.data(), &QMceProxy::nameOwnerIsKnownChanged,
                      iParent, &QMceNameOwner::validChanged);

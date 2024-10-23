@@ -45,6 +45,7 @@ class QMCE_EXPORT QMceBatteryState : public QObject
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
     Q_PROPERTY(State value READ state NOTIFY stateChanged)
     Q_ENUMS(State)
+
 public:
     enum State {
         Unknown,
@@ -53,12 +54,16 @@ public:
         NotCharging,
         Full
     };
-    QMceBatteryState(QObject* aParent = NULL);
+
+    QMceBatteryState(QObject *aParent = nullptr);
+
     bool valid() const;
     State state() const;
+
 Q_SIGNALS:
     void validChanged();
     void stateChanged();
+
 private:
     class Private;
     Private* iPrivate;

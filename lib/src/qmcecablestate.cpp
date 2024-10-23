@@ -44,19 +44,24 @@
 // QMceCableState::Private
 // ==========================================================================
 
-class QMceCableState::Private : public QObject {
+class QMceCableState::Private : public QObject
+{
     Q_OBJECT
 public:
-    Private(QMceCableState* aParent);
+    Private(QMceCableState *aParent);
+
     bool valid() const;
     bool value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(QString state);
+
 private:
     QMceCableState* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -64,12 +69,12 @@ private:
     bool iValue;
 };
 
-QMceCableState::Private::Private(QMceCableState* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(false)
+QMceCableState::Private::Private(QMceCableState *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(false)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::usb_cable_state_ind,
@@ -154,9 +159,9 @@ void QMceCableState::Private::onNameOwnerChanged()
 // QMceCableState
 // ==========================================================================
 
-QMceCableState::QMceCableState(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceCableState::QMceCableState(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 
