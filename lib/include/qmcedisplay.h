@@ -53,7 +53,7 @@ public:
         DisplayOn
     };
 
-    QMceDisplay(QObject* aParent = NULL);
+    QMceDisplay(QObject *aParent = nullptr);
 
     bool valid() const;
     State state() const;

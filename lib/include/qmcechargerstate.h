@@ -44,13 +44,17 @@ class QMCE_EXPORT QMceChargerState : public QObject
     Q_OBJECT
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
     Q_PROPERTY(bool charging READ charging NOTIFY chargingChanged)
+
 public:
-    QMceChargerState(QObject* aParent = NULL);
+    QMceChargerState(QObject *aParent = nullptr);
+
     bool valid() const;
     bool charging() const;
+
 Q_SIGNALS:
     void validChanged();
     void chargingChanged();
+
 private:
     class Private;
     Private* iPrivate;

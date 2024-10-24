@@ -43,19 +43,24 @@
 // QMceBatteryState::Private
 // ==========================================================================
 
-class QMceBatteryState::Private : public QObject {
+class QMceBatteryState::Private : public QObject
+{
     Q_OBJECT
 public:
-    Private(QMceBatteryState* aParent);
+    Private(QMceBatteryState *aParent);
+
     bool valid() const;
     QMceBatteryState::State value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(QString state);
+
 private:
     QMceBatteryState* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -63,12 +68,12 @@ private:
     QMceBatteryState::State iValue;
 };
 
-QMceBatteryState::Private::Private(QMceBatteryState* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(Unknown)
+QMceBatteryState::Private::Private(QMceBatteryState *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(Unknown)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::battery_state_ind,
@@ -130,7 +135,7 @@ void QMceBatteryState::Private::queryValue()
                      &QMceBatteryState::Private::onQueryFinished);
 }
 
-void QMceBatteryState::Private::onQueryFinished(QDBusPendingCallWatcher* aWatcher)
+void QMceBatteryState::Private::onQueryFinished(QDBusPendingCallWatcher *aWatcher)
 {
     QDBusPendingReply<QString> reply(*aWatcher);
     if (!reply.isError()) {
@@ -152,9 +157,9 @@ void QMceBatteryState::Private::onNameOwnerChanged()
 // QMceBatteryState
 // ==========================================================================
 
-QMceBatteryState::QMceBatteryState(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceBatteryState::QMceBatteryState(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

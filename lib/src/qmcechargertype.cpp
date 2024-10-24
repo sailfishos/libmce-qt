@@ -44,19 +44,24 @@
 // QMceChargerType::Private
 // ==========================================================================
 
-class QMceChargerType::Private : public QObject {
+class QMceChargerType::Private : public QObject
+{
     Q_OBJECT
 public:
-    Private(QMceChargerType* aParent);
+    Private(QMceChargerType *aParent);
+
     bool valid() const;
     QMceChargerType::Type value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(QString type);
+
 private:
     QMceChargerType* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -64,12 +69,12 @@ private:
     QMceChargerType::Type iValue;
 };
 
-QMceChargerType::Private::Private(QMceChargerType* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(None)
+QMceChargerType::Private::Private(QMceChargerType *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(None)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::charger_type_ind,
@@ -163,9 +168,9 @@ void QMceChargerType::Private::onNameOwnerChanged()
 // QMceChargerType
 // ==========================================================================
 
-QMceChargerType::QMceChargerType(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceChargerType::QMceChargerType(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

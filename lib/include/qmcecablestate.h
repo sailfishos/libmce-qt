@@ -44,13 +44,17 @@ class QMCE_EXPORT QMceCableState : public QObject
     Q_OBJECT
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
+
 public:
-    QMceCableState(QObject* aParent = NULL);
+    QMceCableState(QObject *aParent = nullptr);
+
     bool valid() const;
     bool connected() const;
+
 Q_SIGNALS:
     void validChanged();
     void connectedChanged();
+
 private:
     class Private;
     Private* iPrivate;

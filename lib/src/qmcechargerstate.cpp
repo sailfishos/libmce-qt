@@ -44,19 +44,24 @@
 // QMceChargerState::Private
 // ==========================================================================
 
-class QMceChargerState::Private : public QObject {
+class QMceChargerState::Private : public QObject
+{
     Q_OBJECT
 public:
-    Private(QMceChargerState* aParent);
+    Private(QMceChargerState *aParent);
+
     bool valid() const;
     bool value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(QString state);
+
 private:
     QMceChargerState* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -64,12 +69,12 @@ private:
     bool iValue;
 };
 
-QMceChargerState::Private::Private(QMceChargerState* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(false)
+QMceChargerState::Private::Private(QMceChargerState *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(false)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::charger_state_ind,
@@ -154,9 +159,9 @@ void QMceChargerState::Private::onNameOwnerChanged()
 // QMceChargerState
 // ==========================================================================
 
-QMceChargerState::QMceChargerState(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceChargerState::QMceChargerState(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

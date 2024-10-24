@@ -44,18 +44,23 @@ class QMCE_EXPORT QMceChargingState : public QObject
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
     Q_PROPERTY(State value READ state NOTIFY stateChanged)
     Q_ENUMS(State)
+
 public:
     enum State {
         Unknown,
         Enabled,
         Disabled
     };
-    QMceChargingState(QObject* aParent = NULL);
+
+    QMceChargingState(QObject *aParent = nullptr);
+
     bool valid() const;
     State state() const;
+
 Q_SIGNALS:
     void validChanged();
     void stateChanged();
+
 private:
     class Private;
     Private* iPrivate;

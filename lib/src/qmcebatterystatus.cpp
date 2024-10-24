@@ -44,19 +44,24 @@
 // QMceBatteryStatus::Private
 // ==========================================================================
 
-class QMceBatteryStatus::Private : public QObject {
+class QMceBatteryStatus::Private : public QObject
+{
     Q_OBJECT
 public:
-    Private(QMceBatteryStatus* aParent);
+    Private(QMceBatteryStatus *aParent);
+
     bool valid() const;
     QMceBatteryStatus::Status value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(QString status);
+
 private:
     QMceBatteryStatus* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -64,12 +69,12 @@ private:
     QMceBatteryStatus::Status iValue;
 };
 
-QMceBatteryStatus::Private::Private(QMceBatteryStatus* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(Ok)
+QMceBatteryStatus::Private::Private(QMceBatteryStatus *aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(Ok)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::battery_status_ind,
@@ -158,9 +163,9 @@ void QMceBatteryStatus::Private::onNameOwnerChanged()
 // QMceBatteryStatus
 // ==========================================================================
 
-QMceBatteryStatus::QMceBatteryStatus(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMceBatteryStatus::QMceBatteryStatus(QObject *aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

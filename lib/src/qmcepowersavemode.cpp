@@ -45,16 +45,20 @@
 class QMcePowerSaveMode::Private : public QObject {
     Q_OBJECT
 public:
-    Private(QMcePowerSaveMode* aParent);
+    Private(QMcePowerSaveMode *aParent);
+
     bool valid() const;
     bool value() const;
+
 private:
     void queryValue();
     void setValid(bool valid);
+
 private Q_SLOTS:
     void onNameOwnerChanged();
-    void onQueryFinished(QDBusPendingCallWatcher* aWatcher);
+    void onQueryFinished(QDBusPendingCallWatcher *aWatcher);
     void updateValue(bool active);
+
 private:
     QMcePowerSaveMode* iParent;
     QSharedPointer<QMceProxy> iProxy;
@@ -62,12 +66,12 @@ private:
     bool iValue;
 };
 
-QMcePowerSaveMode::Private::Private(QMcePowerSaveMode* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iProxy(QMceProxy::instance()),
-    iValid(false),
-    iValue(false)
+QMcePowerSaveMode::Private::Private(QMcePowerSaveMode* aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iProxy(QMceProxy::instance())
+    , iValid(false)
+    , iValue(false)
 {
     QObject::connect(iProxy->signalProxy(),
                      &QMceSignalProxy::psm_state_ind,
@@ -139,9 +143,9 @@ void QMcePowerSaveMode::Private::onNameOwnerChanged()
 // QMcePowerSaveMode
 // ==========================================================================
 
-QMcePowerSaveMode::QMcePowerSaveMode(QObject* aParent) :
-    QObject(aParent),
-    iPrivate(new Private(this))
+QMcePowerSaveMode::QMcePowerSaveMode(QObject* aParent)
+    : QObject(aParent)
+    , iPrivate(new Private(this))
 {
 }
 

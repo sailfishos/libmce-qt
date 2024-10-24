@@ -39,11 +39,12 @@
 
 #include "mce/dbus-names.h"
 
-class QMceProxy::Private : public QObject {
+class QMceProxy::Private : public QObject
+{
     Q_OBJECT
 
 public:
-    Private(QMceProxy* aParent);
+    Private(QMceProxy *aParent);
 
     QMceRequestProxy* requestProxy();
     QMceSignalProxy* signalProxy();
@@ -74,15 +75,15 @@ private:
     QMceSignalProxy* iSignalProxy;
 };
 
-QMceProxy::Private::Private(QMceProxy* aParent) :
-    QObject(aParent),
-    iParent(aParent),
-    iNameOwnerIsKnown(false),
-    iNameOwner(),
-    iBus(QDBusConnection::systemBus()),
-    iService(MCE_SERVICE),
-    iRequestProxy(NULL),
-    iSignalProxy(NULL)
+QMceProxy::Private::Private(QMceProxy* aParent)
+    : QObject(aParent)
+    , iParent(aParent)
+    , iNameOwnerIsKnown(false)
+    , iNameOwner()
+    , iBus(QDBusConnection::systemBus())
+    , iService(MCE_SERVICE)
+    , iRequestProxy(nullptr)
+    , iSignalProxy(nullptr)
 {
     /* Start tracking name owner changes */
     QDBusServiceWatcher *serviceWatcher = new QDBusServiceWatcher(iService, iBus,
@@ -146,8 +147,8 @@ void QMceProxy::Private::onGetNameOwnerReply(QDBusPendingCallWatcher *aWatcher)
 // QMceProxy
 // ==========================================================================
 
-QMceProxy::QMceProxy() :
-    iPrivate(new Private(this))
+QMceProxy::QMceProxy()
+    : iPrivate(new Private(this))
 {
 }
 

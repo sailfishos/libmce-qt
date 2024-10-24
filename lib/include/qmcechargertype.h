@@ -46,14 +46,27 @@ class QMCE_EXPORT QMceChargerType : public QObject
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
     Q_PROPERTY(Type type READ type NOTIFY typeChanged)
     Q_ENUMS(Type)
+
 public:
-    enum Type { None, USB, DCP, HVDCP, CDP, Wireless, Other, };
-    QMceChargerType(QObject* aParent = NULL);
+    enum Type {
+        None,
+        USB,
+        DCP,
+        HVDCP,
+        CDP,
+        Wireless,
+        Other,
+    };
+
+    QMceChargerType(QObject *aParent = nullptr);
+
     bool valid() const;
     Type type() const;
+
 Q_SIGNALS:
     void validChanged();
     void typeChanged();
+
 private:
     class Private;
     Private* iPrivate;

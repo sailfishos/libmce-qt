@@ -48,17 +48,30 @@ class QMCE_EXPORT QMceCallState : public QObject
     Q_PROPERTY(Type type READ type NOTIFY typeChanged)
     Q_ENUMS(State)
     Q_ENUMS(Type)
+
 public:
-    enum State { None, Ringing, Active, Service, };
-    enum Type { Normal, Emergency, };
-    QMceCallState(QObject* aParent = NULL);
+    enum State {
+        None,
+        Ringing,
+        Active,
+        Service,
+    };
+    enum Type {
+        Normal,
+        Emergency,
+    };
+
+    QMceCallState(QObject *aParent = nullptr);
+
     bool valid() const;
     State state() const;
     Type type() const;
+
 Q_SIGNALS:
     void validChanged();
     void stateChanged();
     void typeChanged();
+
 private:
     class Private;
     Private* iPrivate;

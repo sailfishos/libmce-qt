@@ -44,13 +44,17 @@ class QMCE_EXPORT QMceNameOwner : public QObject
     Q_OBJECT
     Q_PROPERTY(bool valid READ valid NOTIFY validChanged)
     Q_PROPERTY(QString nameOwner READ nameOwner NOTIFY nameOwnerChanged)
+
 public:
     QMceNameOwner(QObject *aParent = nullptr);
+
     bool valid() const;
     QString nameOwner() const;
+
 Q_SIGNALS:
     void validChanged();
     void nameOwnerChanged();
+
 private:
     class Private;
     Private *iPrivate;
